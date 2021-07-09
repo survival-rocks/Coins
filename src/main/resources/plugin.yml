@@ -1,0 +1,12 @@
+main: "${project.groupId}.${project.name}"
+name: "${project.name}"
+version: "${project.version}"
+author: JustEli
+website: "${project.url}"
+softdepend:
+  - Vault
+api-version: "1.16"
+load: STARTUP
+
+
+# https://manytools.org/hacker-tools/ascii-banner/ // DOS Rebel // Wide
