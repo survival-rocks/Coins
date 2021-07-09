@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <name>Coins</name>
+    <groupId>me.justeli.coins</groupId>
+    <artifactId>Coins</artifactId>
+    <version>2.0-SNAPSHOT</version>
+    <url>https://coins.justeli.me</url>
+
+    <properties>
+        <maven.compiler.source>16</maven.compiler.source>
+        <maven.compiler.target>16</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <versions.minecraft.minimal>1.16</versions.minecraft.minimal>
+
+        <versions.minecraft>1.17</versions.minecraft>
+        <versions.authlib>1.5.21</versions.authlib>
+        <versions.vault>1.7</versions.vault>
+        <versions.bstats>2.2.1</versions.bstats>
+        <versions.tasks>6919ad9a29</versions.tasks>
+        <versions.textchain>575b99713c</versions.textchain>
+        <versions.cloud>1.4.0</versions.cloud>
+        <versions.adventure-api>4.8.1</versions.adventure-api>
+        <versions.adventure-platform>4.0.0-SNAPSHOT</versions.adventure-platform>
+        <versions.paperlib>1.0.6</versions.paperlib>
+    </properties>
+
+    <repositories>
+        <repository>
+            <id>spigot-repo</id>
+            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+        </repository>
+        <repository>
+            <id>mojang</id>
+            <url>https://libraries.minecraft.net/</url>
+        </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+        <repository>
+            <id>papermc</id>
+            <url>https://papermc.io/repo/repository/maven-public/</url>
+        </repository>
+    </repositories>
+
+    <!-- snapshot maven-shade-plugin -->
+    <pluginRepositories>
+        <pluginRepository>
+            <id>maven-snapshots</id>
+            <url>https://repository.apache.org/content/repositories/snapshots/</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <build>
+        <finalName>${project.name}-${project.version}</finalName>
+        <sourceDirectory>src/main/java</sourceDirectory>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.3.0-SNAPSHOT</version>
+                <configuration>
+
+                    <dependencyReducedPomLocation>${project.build.directory}/dependency-reduced-pom.xml</dependencyReducedPomLocation>
+                    <filters>
+                        <filter>
+                            <artifact>*:*</artifact>
+                            <excludes>
+                                <exclude>META-INF/**</exclude>
+                            </excludes>
+                        </filter>
+                    </filters>
+
+                    <relocations>
+                        <relocation>
+                            <pattern>org.bstats</pattern>
+                            <shadedPattern>me.justeli.coins.shaded.org.bstats</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>cloud.commandframework</pattern>
+                            <shadedPattern>me.justeli.coins.shaded.cloud.commandframework</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>io.leangen</pattern>
+                            <shadedPattern>me.justeli.coins.shaded.io.leangen</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>community.leaf</pattern>
+                            <shadedPattern>me.justeli.coins.shaded.community.leaf</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>net.kyori</pattern>
+                            <shadedPattern>me.justeli.coins.shaded.net.kyori</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>io.papermc</pattern>
+                            <shadedPattern>me.justeli.coins.shaded.io.papermc</shadedPattern>
+                        </relocation>
+                    </relocations>
+
+                    <artifactSet>
+                        <excludes>
+                            <exclude>com.google.code.findbugs:jsr305</exclude>
+                            <exclude>org.checkerframework:checker-qual</exclude>
+                            <exclude>org.jetbrains:annotations</exclude>
+                            <exclude>org.jetbrains.kotlin:kotlin-annotations-jvm</exclude>
+                            <exclude>pl.tlinkowski.annotation:pl.tlinkowski.annotation.basic</exclude>
+                        </excludes>
+                    </artifactSet>
+
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <targetPath>.</targetPath>
+            </resource>
+        </resources>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot-api</artifactId>
+            <version>${versions.minecraft}-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.mojang</groupId>
+            <artifactId>authlib</artifactId>
+            <version>${versions.authlib}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.MilkBowl</groupId>
+            <artifactId>VaultAPI</artifactId>
+            <version>${versions.vault}</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- Compile -->
+        <dependency>
+            <groupId>org.bstats</groupId>
+            <artifactId>bstats-bukkit</artifactId>
+            <version>${versions.bstats}</version>
+        </dependency>
+        <dependency>
+            <groupId>community.leaf.tasks</groupId>
+            <artifactId>tasks-bukkit</artifactId>
+            <version>${versions.tasks}</version>
+        </dependency>
+        <dependency>
+            <groupId>community.leaf.textchain</groupId>
+            <artifactId>textchain-bukkit</artifactId>
+            <version>${versions.textchain}</version>
+        </dependency>
+        <dependency>
+            <groupId>cloud.commandframework</groupId>
+            <artifactId>cloud-paper</artifactId>
+            <version>${versions.cloud}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.kyori</groupId>
+            <artifactId>adventure-api</artifactId>
+            <version>${versions.adventure-api}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.kyori</groupId>
+            <artifactId>adventure-platform-bukkit</artifactId>
+            <version>${versions.adventure-platform}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.papermc</groupId>
+            <artifactId>paperlib</artifactId>
+            <version>${versions.paperlib}</version>
+        </dependency>
+    </dependencies>
+
+</project>

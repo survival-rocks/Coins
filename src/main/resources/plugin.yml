@@ -1,0 +1,9 @@
+name: "${project.name}"
+main: "${project.groupId}.${project.name}"
+version: "${project.version}"
+authors:
+  - JustEli
+website: "${project.url}"
+api-version: "${versions.minecraft.minimal}"
+
+# todo make `signed` and `signature` also a command flag

@@ -1,0 +1,340 @@
+# # # # # # # # # # # # # # # # # # # # # # # # # #                                       |
+#    █████████            ███                     #   ████████                            |
+#   ███░░░░░███          ░░░                      #  ███░░░░███                           |
+#  ███     ░░░   ██████  ████  ████████    █████  # ░░░    ░███                           |
+# ░███          ███░░███░░███░ ░███░░███  ███░░   #    ███████                            |
+# ░███         ░███ ░███ ░███  ░███ ░███░ ░█████  #   ███░░░░                             |
+# ░░███     ███░███ ░███ ░███  ░███ ░███  ░░░░███ #  ███      █                           |
+#  ░░█████████ ░░██████  █████ ████ █████ ██████  # ░██████████                           |
+#   ░░░░░░░░░   ░░░░░░  ░░░░░░ ░░░ ░░░░░░ ░░░░░   # ░░░░░░░░░░                            |
+# # # # # # # # # # # # # # # # # # # # # # # # # #                            by JustEli |
+
+# The main language used in-game. Included: English, Dutch, German, French, Spanish,
+#   Swedish, Chinese, Italian, Hungarian.
+language: English
+
+# The default storage manager.
+#   Supported types: 'YAML', 'SQLite' 'MySQL', 'MariaDB', 'PostgreSQL'
+storage:
+  method: SQLite
+  connection: { address: '', port: '', database: '', username: '', password: '' }
+
+# Naming of currencies. Players can hold different currencies in their /balance.
+currencies:
+  coins:
+    # The default currency will be handled by Vault, which means that other plugins
+    #   will deposit and withdraw from this currency.
+    default: true
+    # Every currency has a currency symbol.
+    symbol: ¢
+    short: CNS
+    # And here you can define the names of single and multiple coins.
+    single: Coin
+    plural: Coins
+  guilders:
+    symbol: ƒ
+    short: GLD
+    single: Guilder
+    plural: Guilders
+
+# Rename commands of this plugin to your liking.
+commands:
+  # Admin command to reload, drop coins, and more.
+  coins:
+    - coin
+    - coins
+  # Lets players withdraw their balance into physical coins.
+  withdraw:
+    - withdraw
+  # Lets players deposit a held coin into their balance.
+  deposit:
+    - deposit
+  # Shows the balance of all the currencies the player owns.
+  balance:
+    - balance
+    - bal
+    - money
+  # Shows a leaderboard with balances of players from high to low.
+  balancetop:
+    - baltop
+    - balancetop
+  # Lets players pay or transfer coins to other players.
+  pay:
+    - pay
+  #
+  jobs:
+    - job
+    - jobs
+
+# Coloring of messages and items. HEX-codes and color names work.
+#   Examples: 'dark green', '197419', 'DARK_AQUA', '3', '&3'.
+colors:
+  currency: 6dd47e # displaying currency in messages
+  negative: e94b3c # negative currency in messages
+  primary: f5b62e  # primary text in messages
+  values: f2b794   # filled in values in messages
+
+# Define any kind of coin that you ever dreamt of.
+#   Check out: https://github.com/survival-rocks/Coins/wiki/defining-coins
+# todo add option to allow "glowing" coin, so coin can be seen through blocks
+# todo ^ seems like you can also have different outline colors
+coins:
+  # Name of this configured coin: 'BLOCK', later used in other parts of the config.
+  BLOCK:
+    item: GOLD_BLOCK     # material of this coin
+    value: [10.0, 15.0]  # the range to determine random worth
+    glow: true           # will give an enchanted effect
+    chance: 0.1          # default chance (10%), overridable in 'drops'
+  INGOT:
+    item: GOLD_INGOT
+    value: [5.0, 10.0]
+    chance: 0.3
+  NUGGET:
+    item: GOLD_NUGGET
+    value: 1.0           # not a random range, but fixed value
+    currency: guilders   # don't use the default currency, but guilders
+    stack: true          # makes the coins stack on the ground
+    amount: [1, 5]       # randomly drops between 1 and 3 coins
+    chance: 0.7
+    hologram: true       # show value of a dropped coin with hologram
+
+# The displaying format for currency, items and action bars.
+#   Check out: https://github.com/survival-rocks/Coins/wiki/display-settings
+display:
+  currency: "${naming.symbol}${_amount}"
+  deposit: "&2+ ${display.currency}"
+  withdraw: "&4- ${display.currency}"
+  coinItem: "${_amount} ${naming.plural}"
+
+# Tell the plugin when and what coins to drop.
+#   Check out: https://github.com/survival-rocks/Coins/wiki/defining-drops
+drops:
+  # The name/identifier of this configured drop. Can be anything.
+  playerKill:
+    # Whether this should be enabled or not. Ignored on startup if false.
+    enabled: false
+    # The listeners/events to listen to for this drop. For this drop, it will listen to
+    #   punch kills and projectile kills.
+    listeners:
+      - KILL_ENTITY
+      - KILL_ENTITY_PROJECTILE
+    # Select what should be allowed to drop coins when event is triggered.
+    selectors:
+      entities:
+        - PLAYER           # players will drop coins if killed by another player
+      preventAlts: true    # but prevent if player was killed by an alt
+  hostileKill:
+    enabled: true
+    listeners:
+      - KILL_ENTITY
+      - KILL_ENTITY_PROJECTILE
+    selectors:
+      entities:
+        - HOSTILE          # all hostile mobs will drop a coin with this event
+      spawners: false      # but not if they're from spawners
+      slimeSplit: false    # and exclude slimes that were spawned by split
+  passiveKill:
+    enabled: false
+    listeners:
+      - KILL_ENTITY
+      - KILL_ENTITY_PROJECTILE
+    selectors:
+      entities:
+        - PASSIVE
+      spawners: false
+    chance:
+      INGOT: 0.2           # override the default drop chance for INGOT
+      NUGGET: 0.4          # and let's also do so for NUGGET
+  entityDeath:
+    enabled: false
+    # This listener is for any death, also when not killed by a player.
+    listeners:
+      - ENTITY_ANY_DEATH # also have ENTITY_NATURAL_DEATH
+    selectors:
+      entities:
+        - HOSTILE
+        - PASSIVE
+      spawners: false
+      slimeSplit: false
+  mineValuableOre:
+    enabled: false
+    listeners:
+      - BREAK_BLOCK
+    selectors:
+      materials:           # materials in this event that are selected
+        - EMERALD_ORE
+        - DIAMOND_ORE
+        - LAPIS_LAZULI_ORE
+    chance:
+      # Override the default chance for the coin configured as 'BLOCK'.
+      BLOCK: 0.2
+  mineCheapOre:
+    enabled: false
+    listeners:
+      - BREAK_BLOCK
+    selectors:
+      materials:
+        - GOLD_ORE
+        - REDSTONE_ORE
+        - IRON_ORE
+        - COAL_ORE
+        - COPPER_ORE
+  chance:
+    NUGGET: 0.5
+  catchFish:
+    enabled: true
+    listeners:
+      - CATCH_FISH
+  unlockRecipe:
+    enabled: true
+    listeners:
+      - UNLOCK_RECIPE
+    chance:
+      BLOCK: 0.0           # disable the drop of BLOCK
+      INGOT: 0.0           # and INGOT for this event (only)
+      NUGGET: 1.0
+  advancement:
+    enabled: true
+    listeners:
+      - ADVANCEMENT_DONE
+    chance:
+      BLOCK: 0.8
+      INGOT: 0.6
+      NUGGET: 0.2
+  tamePet:
+    enabled: true
+    listeners:
+      - TAME_PET
+    chance:
+      BLOCK: 0.0
+  breedAnimal:
+    enabled: false
+    listeners:
+      - BREED_ANIMAL
+  repairItem:
+    enabled: false
+    listeners:
+      - REPAIR_ITEM
+  enchantItem:
+    enabled: false
+    listeners:
+      - ENCHANT_ITEM
+  brewPotion:
+    enabled: false
+    listeners:
+      - BREW_POTION
+  harvestCrop:
+    enabled: false
+    listeners:
+      - HARVEST_CROP
+
+# Players can pick a job to only receive coins for the job they're doing. But this is
+#   disabled by default, as it is very limiting for players.
+jobs:
+  enabled: false
+  # The cool-down before a player can switch to another job.
+  cooldown: 2d
+  # The configured drops that all players will get by default.
+  default:
+    - unlockRecipe
+  # Define what jobs there are, and what configured drops are associated with it.
+  pickable:
+    fighter:
+      - playerKill
+    hunter:
+      - hostileKill
+      - passiveKill
+    miner:
+      - mineValuableOre
+      - mineCheapOre
+    fisher:
+      - catchFish
+    tamer:
+      - tamePet
+      - breedAnimal
+    smith:
+      - repairItem
+      - enchantItem
+    brewer:
+      - brewPotion
+    farmer:
+      - harvestCrop
+
+# Spawn coins in generated loot chests.
+lootChests:
+  chancePerSlot: 0.05   # means 5% per slot in a chest (27 slots total)
+  value: [10, 20]       # and worth between 10 and 20
+
+settings:
+  # The amount of decimals of the coins economy. Examples: 0: $2 || 1: $2.3 || 2: $2.32
+  coinDecimals: 2
+  # The least amount of damage that needs to be done by a player before dropping coins.
+  #   This is great for mob farms that deal 20% or more fall damage, by default.
+  percentagePlayerHit: 0.8
+  # Disable hoppers to pick up dropped coins. Withdrawn coins will still be picked up.
+  disableHoppers: false
+  # The default sound to play for coins that are picked up or deposited. Pitch can be
+  #   configured per coin in the 'coins' section.
+  soundVolume: 0.5
+  # Maximum amount of kills per XYZ before coins stop dropping. Useful against grinders.
+  #   Default: One drop of coins at XYZ will be the limit for 2 hours (configurable below).
+  #            Will be disabled when inputting a value lower than 1.
+  limitForLocation: 1
+  locationLimitCooldown: 2h
+  # Disable anything that has to do with Coins in these worlds (names).
+  disabledWorlds: []
+
+# Let players withdraw their balance into physical coins. (/withdraw <worth> <amount>)
+#   For example: this allows players to store those coins in chests. You can also configure
+#   when these coins will be deposited to their balance again.
+withdraw:
+  enabled: true
+  # Whether the given values should be a range, or that only that value is withdrawable.
+  fixed: false
+  currency: coins
+  # The different looks for withdrawn coins. Starting at 1, it will be a range.
+  values:
+    NUGGET: 100     # withdraw worth 1 (lowest) to 100 will display as NUGGET
+    INGOT: 1000     # withdraw worth 100 to 1,000 displays as INGOT
+    BLOCK: 10000    # withdraw worth 1,000 to 10,000 displays as BLOCK
+  # Make it so withdrawn coins are signed by the player that withdrawn it. Only the player
+  #   that withdrawn the coin can then deposit it again.
+  # todo make `signed` and `signature` also a command flag
+  signed: false
+  # Have a lore on withdrawn coins saying whom had withdrawn it. "Withdrawn by ..."
+  signature: true
+  # Allow players to rename coins inside an anvil. Doesn't affect the value.
+  rename: false
+  # Define at which action coins should be deposited to their balance again.
+  #   Options: LEFT_CLICK, RIGHT_CLICK, PICKUP, CONTAINER, COMMAND
+  deposit:
+    - LEFT_CLICK
+    - RIGHT_CLICK
+    - PICKUP
+
+# Everything about player death.
+death:
+  # Drop coins and take money from a player's balance on death.
+  enabled: true
+  # The (random) range to take from the player's balance on death.
+  takeAmount: [10, 30]
+  # Should the given numbers at 'takeAmount' be percentages instead of numbers?
+  takePercentage: false
+  # Don't take coins if the player's balance turns negative.
+  preventNegativeBalance: true
+  # Make the money taken drop as coins at their death location. Will make the coins
+  #   disappear when set to false.
+  dropAtDeathLocation: false
+
+economy:
+  # Set Coins to be the server's economy manager (to store money of players). Settings
+  #   below won't be listened to when set to false.
+  integration: false
+  # Show a throwing coins effect when a transaction is made by a player.
+  effects: true
+  # The starting balance of new players to the server.
+  startingBalance: 100.00
+  # Track all kind of things about the economy. Like how many coins were withdrawn.
+  track: false
+  # The maximum balance a player can have.
+  maximumBalance: 1000000000000.00
