@@ -1,0 +1,116 @@
+language: English
+
+naming:
+  symbol: $
+  single: Coin
+  plural: Coins
+  color: ffaa00
+
+coins:
+  BLOCK:
+    item: gold block
+    chance: 0.1
+    data: 5
+    glowing: true
+    sound: "ITEM_ARMOR_EQUIP_GOLD"
+    worth: 10-15
+  INGOT:
+    item: gold ingot
+    chance: 0.2
+    data: 4
+    stack: true
+    sound: "ITEM_ARMOR_EQUIP_GOLD"
+    worth: 5-9
+  NUGGET:
+    item: gold nugget
+    chance: 0.5
+    stack: true
+    skull: eyJ0ZXh[...]
+    sound: "ITEM_ARMOR_EQUIP_GOLD" # remove to have no sound == null
+    worth: 1-4
+
+display:
+  currency: "${naming.currency}${amount}"
+  deposit: "&2+ &a${display.currency}"
+  withdraw: "&4- &c${display.currency}"
+
+types:
+  PLAYER:
+    instance: [Player]
+  HOSTILE:
+    instance: [Monster, Boss, Flying, Slime, Wolf]
+    entity: []
+  PASSIVE:
+    instance: [Mob]
+  BLOCK:
+    material: []
+
+drops:
+  PLAYER:
+    enabled: false
+    preventAlts: true
+    chance:
+      BLOCK: 0.1
+      INGOT: 0.2
+      NUGGET: 0.4
+  HOSTILE:
+    enabled: true
+    spawners: false
+    splitReward: false
+  PASSIVE:
+    enabled: false
+    spawners: false
+  BLOCK:
+    enabled: true
+
+
+moneyAmount:
+  from: 3.0
+  to: 7.0
+mobMultiplier:
+  ENDER_DRAGON: 50
+  WITHER: 20
+  PLAYER: 3
+experienceBlocks:
+  GOLD_ORE: 0.5
+  IRON_ORE: 0.3
+  COAL_ORE: 0.2
+  SPONGE: 0.1
+  LAPIS_LAZULI_ORE: 0.2
+  DIAMOND_ORE: 0.6
+  REDSTONE_ORE: 0.2
+  EMERALD_ORE: 0.6
+  NETHER_QUARTZ_ORE: 0.1
+  NETHERITE: 0.7
+  SPAWNER: 1.0
+
+settings:
+  texturePack: false
+  dropEachCoin: true
+  dropWithAnyDeath: false
+  moneyDecimals: 2
+  percentagePlayerHit: 0.9
+  disableHoppers: false
+  soundPitch: 0.3
+  soundVolume: 0.5
+  limitForLocation: 1
+  disabledWorlds: []
+
+withdraw:
+  enabled: true
+  maximum: 10000
+  deposit: [LEFT_CLICK, RIGHT_CLICK, PICKUP] #CONTAINER
+
+death:
+  take: true
+  takeAmountFromTo: [10, 30]
+  preventNegativeBalance: true
+  dropAtDeathLocation: false
+  takePercentage: false
+
+economy:
+  integration: false
+  effect: true
+  statingBalance: 100
+  track: false
+  maximumBalance: 1000000000000
