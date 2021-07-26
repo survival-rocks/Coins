@@ -127,14 +127,14 @@ public class Settings
                     }
                     catch (IllegalArgumentException e)
                     {
-                        errorMessage(Msg.NO_SUCH_ENTITY, key.toUpperCase());
+                        System.err.println("No entity type was found with that name.");
                     }
                 }
             }
         }
         catch (NullPointerException e)
         {
-            errorMessage(Msg.OUTDATED_CONFIG);
+            System.err.println("Using an outdated config.");
             return false;
         }
 
@@ -144,7 +144,7 @@ public class Settings
         }
         catch (IllegalArgumentException e)
         {
-            errorMessage(Msg.NO_SUCH_SOUND);
+            System.err.println("No sound was found with that name.");
             return false;
         }
 
@@ -214,7 +214,7 @@ public class Settings
         }
         catch (FileNotFoundException e)
         {
-            errorMessage(Msg.LANGUAGE_NOT_FOUND, file.getString("language"));
+            System.err.println(e.getMessage());
             return false;
         }
         catch (ParseException | IOException e)
@@ -224,51 +224,5 @@ public class Settings
         }
 
         return !failure;
-    }
-
-    public enum Msg
-    {
-        OUTDATED_CONFIG,
-        LANGUAGE_NOT_FOUND,
-        NO_SUCH_ENTITY,
-        NO_SUCH_SOUND,
-        NO_SUCH_MATERIAL,
-        NO_TRANSLATION,
-    }
-
-    public static void errorMessage (Msg msg, String... input)
-    {
-        Logger logger = Bukkit.getLogger();
-        switch (msg)
-        {
-            case OUTDATED_CONFIG:
-                logger.severe("Your config of Coins is outdated, update the Coins config.yml.");
-                logger.severe("You can copy it from here: https://github.com/JustEli/Coins/blob/master/src/config.yml");
-                logger.severe("Use /coins reload afterwards. You could also remove the config if you haven't configured it.");
-                if (input.length != 0)
-                    logger.severe("This option is probably missing (add it): " + Arrays.toString(input));
-                break;
-            case LANGUAGE_NOT_FOUND:
-                logger.severe("The language '" + input[0] + "' that you set in your config does not exist.");
-                logger.severe("Check all available languages in the folder 'Coins/language'.");
-                break;
-            case NO_SUCH_ENTITY:
-                logger.severe("There is no entity with the name '" + input[0] + "', please change the Coins config.");
-                logger.severe("Get types from here: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/EntityType.html");
-                break;
-            case NO_SUCH_MATERIAL:
-                logger.severe("There is no material with the name '" + input[0] + "', please change the Coins config.");
-                logger.severe("Get materials from here: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html");
-                break;
-            case NO_SUCH_SOUND:
-                logger.severe("The sound '" + input[0] + "' does not exist. Change it in the Coins config.");
-                logger.severe("Please use a sound from: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html");
-                break;
-            case NO_TRANSLATION:
-                logger.severe("The translation for '" + input[0] + "' was not found.");
-                logger.severe("Please add it to the {language}.json file.");
-                logger.severe("Or delete your /language/ folder in /Coins/. RECOMMENDED");
-                break;
-        }
     }
 }

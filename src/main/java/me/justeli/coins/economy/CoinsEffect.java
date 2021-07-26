@@ -6,7 +6,6 @@ import me.justeli.coins.item.Coin;
 import me.justeli.coins.settings.Config;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Item;
@@ -22,6 +21,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.Vector;
 
 import java.util.HashMap;
+import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -32,6 +32,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class CoinsEffect implements Listener
 {
     private final Coins instance;
+    private static final Random RANDOM = new Random();
 
     public CoinsEffect (Coins instance)
     {
@@ -124,7 +125,7 @@ public class CoinsEffect implements Listener
             Item item = world.dropItem(location.clone().subtract(0, 0.7, 0), getCoin());
             item.setPickupDelay(10000);
             item.setVelocity(location.getDirection()
-                    .add(new Vector((Math.random() - 0.5) / 4, 0.5 + ((Math.random() - 0.5) / 4), (Math.random() - 0.5) / 4)).multiply(0.3));
+                    .add(new Vector((RANDOM.nextDouble() - 0.5) / 4, 0.5 + ((RANDOM.nextDouble() - 0.5) / 4), (RANDOM.nextDouble() - 0.5) / 4)).multiply(0.3));
 
             instance.delayed(ThreadLocalRandom.current().nextInt(1, 8), item::remove);
         }

@@ -10,6 +10,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.Arrays;
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -21,6 +22,8 @@ public class Coin
     private final ItemStack coin;
     private final ItemMeta meta;
     private final Double worth;
+
+    private static final Random RANDOM = new Random();
 
     public Coin (double worth)
     {
@@ -43,7 +46,7 @@ public class Coin
             double second = Config.get(Config.DOUBLE.MONEY_AMOUNT__FROM);
             double first = Config.get(Config.DOUBLE.MONEY_AMOUNT__TO) - second;
 
-            this.worth = Math.random() * first + second;
+            this.worth = RANDOM.nextDouble() * first + second;
         }
     }
 

@@ -8,10 +8,12 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.Vector;
 
 import java.util.Collections;
+import java.util.Random;
 
 public class CoinParticles
 {
     private final Coins instance;
+    private static final Random RANDOM = new Random();
 
     public CoinParticles (Coins instance)
     {
@@ -28,11 +30,12 @@ public class CoinParticles
         {
             instance.delayed(i, () ->
             {
-                meta.setLore(Collections.singletonList(String.valueOf(Math.random())));
+                meta.setLore(Collections.singletonList(String.valueOf(RANDOM.nextDouble())));
                 coin.setItemMeta(meta);
                 Item item = l.getWorld().dropItem(l, coin);
                 item.setPickupDelay(30);
-                item.setVelocity(new Vector((Math.random() - 0.5) * radius / 10, Math.random() * radius / 5, (Math.random() - 0.5) * radius / 10));
+                item.setVelocity(new Vector((RANDOM.nextDouble() - 0.5) * radius / 10, RANDOM.nextDouble() * radius / 5,
+                        (RANDOM.nextDouble() - 0.5) * radius / 10));
             });
         }
     }

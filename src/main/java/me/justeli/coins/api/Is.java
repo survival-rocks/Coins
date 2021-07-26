@@ -24,6 +24,16 @@ public class Is
         return entity instanceof Mob;
     }
 
+    public static boolean player (Entity entity)
+    {
+        return entity instanceof Player;
+    }
+
+    public static boolean passive (Entity entity)
+    {
+        return !hostile(entity) && !player(entity) && entity instanceof Mob;
+    }
+
     // Bosses are Ender Dragons and Withers, currently.
     public static boolean boss (Entity entity)
     {

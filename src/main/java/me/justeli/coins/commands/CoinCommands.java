@@ -5,27 +5,26 @@ import cloud.commandframework.annotations.CommandMethod;
 import cloud.commandframework.annotations.CommandPermission;
 import cloud.commandframework.annotations.specifier.Range;
 import me.justeli.coins.Coins;
-import me.justeli.coins.api.Extras;
 import me.justeli.coins.economy.CoinsAPI;
 import me.justeli.coins.item.CheckCoin;
 import me.justeli.coins.settings.Config;
 import me.justeli.coins.settings.Messages;
-import me.justeli.coins.settings.Settings;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Random;
 
 public class CoinCommands
 {
     private final Coins instance;
+    private static final Random RANDOM = new Random();
 
     public CoinCommands (Coins instance)
     {
@@ -38,7 +37,6 @@ public class CoinCommands
     {
         long start = System.currentTimeMillis();
         instance.getSettings().remove();
-        Extras.resetMultiplier();
         boolean success = instance.getSettings().initConfig();
         sender.sendMessage(Messages.RELOAD_SUCCESS.toString().replace("{0}", Long.toString(System.currentTimeMillis() - start)));
 
@@ -168,7 +166,7 @@ public class CoinCommands
 
             for (Item coin : coins)
             {
-                double random = Math.random() * 3;
+                double random = RANDOM.nextDouble() * 3;
                 coin.setVelocity(new Vector(0, random, 0));
                 instance.delayed((int) random * 5, coin::remove);
             }
@@ -189,7 +187,7 @@ public class CoinCommands
     @CommandPermission("coins.version")
     public void version (CommandSender sender)
     {
-        String version = Coins.getUpdate();
+        String version = Coins.latest();
         String current = instance.getDescription().getVersion();
         sender.sendMessage(Messages.VERSION_CURRENTLY.format(current));
         sender.sendMessage(Messages.LATEST_VERSION.format(version));
@@ -213,7 +211,7 @@ public class CoinCommands
     private void sendHelp (CommandSender sender)
     {
         String version = instance.getDescription().getVersion();
-        String update = Coins.getUpdate();
+        String update = Coins.latest();
         StringBuilder notice = new StringBuilder(Messages.COINS_HELP.toString()).append(" ").append(version);
 
         if (!update.equals(version) && sender.hasPermission("coins.version"))

@@ -6,7 +6,7 @@
 
     <groupId>me.justeli.coins</groupId>
     <artifactId>Coins</artifactId>
-    <version>2.0</version>
+    <version>survival.rocks</version>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -36,49 +36,37 @@
         <sourceDirectory>src/main/java</sourceDirectory>
         <plugins>
             <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <mainClass>fully.qualified.MainClass</mainClass>
-                        </manifest>
-                    </archive>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                    <outputDirectory>${basedir}/../output</outputDirectory>
-                    <finalName>${project.name}-${project.version}</finalName>
-                    <appendAssemblyId>false</appendAssemblyId>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>make-assembly</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.1.0</version>
+                <version>3.2.4</version>
                 <configuration>
+                    <dependencyReducedPomLocation>${project.build.directory}/dependency-reduced-pom.xml</dependencyReducedPomLocation>
                     <relocations>
                         <relocation>
                             <pattern>org.bstats</pattern>
-                            <shadedPattern>me.justeli.coins.bstats</shadedPattern>
+                            <shadedPattern>me.justeli.coins.shaded.bstats</shadedPattern>
                         </relocation>
                         <relocation>
-                            <pattern>cloud</pattern>
-                            <shadedPattern>me.justeli.coins.cloud</shadedPattern>
+                            <pattern>cloud.commandframework</pattern>
+                            <shadedPattern>me.justeli.coins.shaded.cloud.commandframework</shadedPattern>
                         </relocation>
                         <relocation>
-                            <pattern>io</pattern>
-                            <shadedPattern>me.justeli.coins.io</shadedPattern>
+                            <pattern>io.papermc</pattern>
+                            <shadedPattern>me.justeli.coins.shaded.io.papermc</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>io.leangen</pattern>
+                            <shadedPattern>me.justeli.coins.shaded.io.leangen</shadedPattern>
                         </relocation>
                     </relocations>
+                    <filters>
+                        <filter>
+                            <artifact>*:*</artifact>
+                            <excludes>
+                                <exclude>META-INF/**</exclude>
+                            </excludes>
+                        </filter>
+                    </filters>
                 </configuration>
                 <executions>
                     <execution>
@@ -117,11 +105,16 @@
             <version>1.7</version>
             <scope>provided</scope>
         </dependency>
+        <!-- compile -->
+        <dependency>
+            <groupId>io.papermc</groupId>
+            <artifactId>paperlib</artifactId>
+            <version>1.0.6</version>
+        </dependency>
         <dependency>
             <groupId>org.bstats</groupId>
             <artifactId>bstats-bukkit</artifactId>
             <version>1.7</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>cloud.commandframework</groupId>

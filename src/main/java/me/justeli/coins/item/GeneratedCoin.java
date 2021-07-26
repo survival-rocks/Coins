@@ -1,9 +1,7 @@
 package me.justeli.coins.item;
 
 import me.justeli.coins.api.Format;
-import me.justeli.coins.api.SkullValue;
 import me.justeli.coins.settings.Config;
-import me.justeli.coins.settings.Settings;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
@@ -18,16 +16,9 @@ public class GeneratedCoin
     private ItemStack coin;
     public void init ()
     {
-        String texture = Config.get(Config.STRING.SKULL_TEXTURE);
         String material = Config.get(Config.STRING.COIN_ITEM).replace(" ", "_").toUpperCase();
 
-        coin = texture == null || texture.isEmpty()? new ItemStack(Material.valueOf(material)) : SkullValue.get(texture);
-
-        if (coin == null)
-        {
-            Settings.errorMessage(Settings.Msg.NO_SUCH_MATERIAL, material);
-            return;
-        }
+        coin = new ItemStack(Material.valueOf(material));
 
         ItemMeta meta = this.coin.getItemMeta();
         if (meta != null)

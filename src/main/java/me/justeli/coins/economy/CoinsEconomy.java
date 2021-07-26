@@ -2,7 +2,6 @@ package me.justeli.coins.economy;
 
 import me.justeli.coins.Coins;
 import me.justeli.coins.settings.Config;
-import me.justeli.coins.settings.Settings;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
