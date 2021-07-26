@@ -183,7 +183,7 @@ public class Settings
 
     private boolean setLanguage ()
     {
-        for (String lang : new String[]{"english", "dutch", "spanish", "german", "french", "swedish", "chinese", "hungarian"})
+        for (String lang : new String[]{"english"})
         {
             if (!new File(instance.getDataFolder() + File.separator + "language" + File.separator + lang + ".json").exists())
             {
