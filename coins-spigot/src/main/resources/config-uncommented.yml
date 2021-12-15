@@ -1,0 +1,292 @@
+# # # # # # # # # # # # # # # # # # # # # # # # # #
+#    █████████            ███                     #   ████████
+#   ███░░░░░███          ░░░                      #  ███░░░░███
+#  ███     ░░░   ██████  ████  ████████    █████  # ░░░    ░███
+# ░███          ███░░███░░███░ ░███░░███  ███░░   #    ███████
+# ░███         ░███ ░███ ░███  ░███ ░███░ ░█████  #   ███░░░░
+# ░░███     ███░███ ░███ ░███  ░███ ░███  ░░░░███ #  ███      █
+#  ░░█████████ ░░██████  █████ ████ █████ ██████  # ░██████████
+#   ░░░░░░░░░   ░░░░░░  ░░░░░░ ░░░ ░░░░░░ ░░░░░   # ░░░░░░░░░░
+# # # # # # # # # # # # # # # # # # # # # # # # # #  by JustEli
+
+language: English
+economyManager: false
+disabledWorlds: []
+
+colors:
+  primary: f5b62e
+  values: f2b794
+
+storage:
+  method: SQLite
+  connection:
+    database: Coins
+    username: coins
+    password: ''
+    address: localhost
+    port: 3306
+
+currencies:
+  default:
+    decimals: 2
+    starting: 100.00
+    effects: true
+    positive: 6dd47e
+    negative: e94b3c
+    format: "${_currency.symbol}${_amount}"
+    deposit: "+ ${_currency.format}"
+    withdraw: "- ${_currency.format}"
+  types:
+    - id: coins
+      default: true
+      single: Coin
+      plural: Coins
+      code: CNS
+      symbol: ¢
+
+coins:
+  default:
+    sound: ITEM_ARMOR_EQUIP_GOLD
+    pitch: 0.5
+    volume: 0.5
+    hoppers: true
+    currency: coins
+    stack: false
+  types:
+    - id: block
+      material: GOLD_BLOCK
+      hoppers: false
+    - id: ingot
+      material: GOLD_INGOT
+    - id: raw
+      material: RAW_GOLD
+    - id: nugget
+      material: GOLD_NUGGET
+
+spawnables:
+  default:
+    enabled: true
+    type: DROP
+    selectors:
+      allowAlts: false
+      spawners: false
+      slimeSplit: false
+      killer:
+        - PLAYER
+  types:
+    - id: playerKill
+      enabled: false
+      events:
+        - KILL_ENTITY_STAB
+        - KILL_ENTITY_PROJECTILE
+      selectors:
+        permission: "coins.spawnable.player-kill"
+        victim:
+          - PLAYER
+
+    - id: hostileKill
+      events:
+        - KILL_ENTITY_STAB
+        - KILL_ENTITY_PROJECTILE
+      selectors:
+        victim:
+          - HOSTILE
+
+    - id: spawnerKill
+      enabled: false
+      events:
+        - KILL_ENTITY_STAB
+        - KILL_ENTITY_PROJECTILE
+      selectors:
+        victim:
+          - ANY
+        spawners: true
+
+    - id: passiveKill
+      enabled: false
+      events:
+        - KILL_ENTITY_STAB
+        - KILL_ENTITY_PROJECTILE
+      selectors:
+        victim:
+          - PASSIVE
+      chance:
+        INGOT: 0.2
+        NUGGET: 0.4
+
+    - id: entityDeath
+      enabled: false
+      events:
+        - ENTITY_ANY_DEATH
+      selectors:
+        victim:
+          - HOSTILE
+          - PASSIVE
+        spawners: false
+        slimeSplit: false
+
+    - id: mineValuableOre
+      enabled: false
+      events:
+        - BREAK_BLOCK
+      selectors:
+        materials:
+          - EMERALD_ORE
+          - DIAMOND_ORE
+          - LAPIS_LAZULI_ORE
+      chance:
+        BLOCK: 0.2
+
+    - id: mineCheapOre
+      enabled: false
+      events:
+        - BREAK_BLOCK
+      selectors:
+        materials:
+          - GOLD_ORE
+          - REDSTONE_ORE
+          - IRON_ORE
+          - COAL_ORE
+          - COPPER_ORE
+      chance:
+        NUGGET: 0.5
+
+    - id: catchFish
+      events:
+        - CATCH_FISH
+
+    - id: unlockRecipe
+      events:
+        - UNLOCK_RECIPE
+      chance:
+        BLOCK: 0.0
+        INGOT: 0.0
+        NUGGET: 1.0
+
+    - id: advancement
+      events:
+        - ADVANCEMENT_DONE
+      chance:
+        BLOCK: 0.8
+        INGOT: 0.6
+        NUGGET: 0.2
+
+    - id: tamePet
+      events:
+        - TAME_PET
+      chance:
+        BLOCK: 0.0
+
+    - id: breedAnimal
+      enabled: false
+      events:
+        - BREED_ANIMAL
+
+    - id: repairItem
+      enabled: false
+      events:
+        - REPAIR_ITEM
+
+    - id: enchantItem
+      enabled: false
+      events:
+        - ENCHANT_ITEM
+
+    - id: brewPotion
+      enabled: false
+      events:
+        - BREW_POTION
+
+    - id: harvestCrop
+      enabled: false
+      events:
+        - HARVEST_CROP
+
+    - id: lootChestPlace
+      events:
+        - LOOT_CHEST_GENERATE
+
+jobs:
+  enabled: false
+  cooldown: 2d
+  included:
+    - unlockRecipe
+  default: {}
+  types:
+    - id: fighter
+      drops:
+        - playerKill
+    - id: hunter
+      drops:
+        - hostileKill
+        - passiveKill
+    - id: miner
+      drops:
+        - mineValuableOre
+        - mineCheapOre
+    - id: fisher
+      drops:
+        - catchFish
+    - id: tamer
+      drops:
+        - tamePet
+        - breedAnimal
+    - id: smith
+      drops:
+        - repairItem
+        - enchantItem
+    - id: brewer
+      drops:
+        - brewPotion
+    - id: farmer
+      drops:
+        - harvestCrop
+
+commands:
+  coins:
+    enabled: true
+    labels:
+      - coin
+      - coins
+  withdraw:
+    enabled: true
+    labels:
+      - withdraw
+    fixed: false
+    currency: coins
+    values:
+      NUGGET: 100
+      INGOT: 1000
+      BLOCK: 10000
+    signed: false
+    format: "${_amount} ${_currency.plural}"
+    signature: true
+    rename: false
+    deposit:
+      - LEFT_CLICK
+      - RIGHT_CLICK
+      - PICKUP
+  deposit:
+    enabled: true
+    labels:
+      - deposit
+  balance:
+    enabled: true
+    labels:
+      - balance
+      - bal
+      - money
+  balancetop:
+    enabled: true
+    labels:
+      - balancetop
+      - baltop
+  pay:
+    enabled: true
+    labels:
+      - pay
+  jobs:
+    enabled: true
+    labels:
+      - jobs
+      - job

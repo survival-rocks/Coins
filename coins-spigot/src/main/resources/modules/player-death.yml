@@ -1,0 +1,5 @@
+enabled: false
+takeAmount: [10, 30]
+takePercentage: false
+preventNegativeBalance: true
+dropAtDeathLocation: false

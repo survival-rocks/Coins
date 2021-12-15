@@ -1,0 +1,6 @@
+name: '${plugin.name}'
+main: '${plugin.main}'
+authors: ${plugin.authors}
+version: '${plugin.version}'
+api-version: '${plugin.api-version}'
+website: '${plugin.website}'
